@@ -1,0 +1,75 @@
+#!/usr/bin/env bash
+
+# Change it to your GCC version, by default it is to gcc
+
+if [ ! `command -v gcc` ]; then
+    echo -e "\n\e[1;91mError\e[0m : GCC not found add appropriate GCC version in file."
+    exit 1;
+else
+    GCC="gcc" #Change the GCC version
+    GCC_Flags=" -x c -o " #Change the GCC flags
+    which_GCC=$(which $GCC)   
+fi
+
+
+# Default compiliation location is /tmp , change it if you want.
+
+COMP_LOC="/tmp/"
+
+
+# Finally compiling and running the C program
+
+function gcc_me()
+{
+    echo -e "\e[1;92m######### Starting Compiling\e[0m\n"
+
+        $which_GCC $GCC_Flags  $COMP_LOC/tmp_cme_file_name.out $COMP_LOC/tmp_cme_$file_name
+    
+    if [ "$?" = "0" ]; then
+        echo -e "\e[1;92m######### Done Compiling, Executing\e[0m\n"
+    else
+        echo -e "\e[1;91m######### Failed Compiling\e[0m\n"
+    fi
+    
+    # Executing the compiled binary
+
+        $COMP_LOC/tmp_cme_file_name.out
+
+        exit $?
+}
+
+
+# Checking if SHEBANG #!/usr/bin/cmash exist or not in file
+
+function chk_shebang_exist()
+{
+    tmp_1=$(head -n 1 $file_name) #Cheking if the shebang exist in 1st line or not.
+    if [ "$tmp_1" = "#!/usr/bin/cmash" ]; then
+        sed '1d' $file_name > $COMP_LOC/tmp_cme_$file_name
+        gcc_me #Calling gcc_me() funxtio to compile the C program
+        break
+    else
+        tmp_2=$(grep  -csx "#!/usr/bin/cmash" $file_name)
+        if [ "$tmp2" != "" ]; then
+            sed ''$tmp_2'd' $file_name > $COMP_LOC/tmp_cme_$file_name
+            gcc_me #Calling gcc_me() funxtio to compile the C program
+            break     
+        else
+            echo -e "\n\e[1;91mError\e[0m : Shebang not found, add "\#\!/usr/bin/cmash" in first line of file."
+        fi
+    fi
+}
+
+
+# Getting the file name
+
+if [ "$1" = "" ]; then
+    echo -e "\n\e[1;91mError\e[0m : No file provided\n"
+else
+    file_name=($1)
+    if [ ! -f "$file_name" ]; then
+        echo -e "\n\e[1;91mError\e[0m : File not found"
+        exit 1;
+    fi
+    chk_shebang_exist #Calling the chk_shebang_exist() function
+fi
