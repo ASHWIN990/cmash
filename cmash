@@ -46,7 +46,7 @@ function chk_shebang_exist()
     tmp_1=$(head -n 1 $file_name) #Cheking if the shebang exist in 1st line or not.
     if [ "$tmp_1" = "#!/usr/bin/cmash" ]; then
         sed '1d' $file_name > $COMP_LOC/tmp_cme_$file_name
-        gcc_me #Calling gcc_me() funxtio to compile the C program
+        gcc_me #Calling gcc_me() function to compile the C program
         break
     else
         tmp_2=$(grep  -csx "#!/usr/bin/cmash" $file_name)
