@@ -14,7 +14,16 @@ fi
 
 # Default compiliation location is /tmp , change it if you want.
 
-COMP_LOC="/tmp/"
+COMP_LOC="/tmp"
+
+
+# Deleting all the files related to the program you just compiled and run
+
+function delete_file()
+{
+    rm -rf /tmp/tmp_cmash* > /dev/null
+    echo "Hello world"
+}
 
 
 # Finally compiling and running the C program
@@ -23,7 +32,7 @@ function gcc_me()
 {
     echo -e "\e[1;92m######### Starting Compiling\e[0m\n"
 
-        $which_GCC $GCC_Flags  $COMP_LOC/tmp_cme_file_name.out $COMP_LOC/tmp_cme_$file_name
+        $which_GCC $GCC_Flags  $COMP_LOC/tmp_cmash_$file_name.out $COMP_LOC/tmp_cmash_$file_name
     
     if [ "$?" = "0" ]; then
         echo -e "\e[1;92m######### Done Compiling, Executing\e[0m\n"
@@ -34,8 +43,10 @@ function gcc_me()
     
     # Executing the compiled binary
 
-        $COMP_LOC/tmp_cme_file_name.out
+        $COMP_LOC/tmp_cmash_$file_name.out
 
+		delete_file #Deleteing all the files related to this
+		
         exit $?
 }
 
@@ -46,13 +57,13 @@ function chk_shebang_exist()
 {
     tmp_1=$(head -n 1 $file_name) #Cheking if the shebang exist in 1st line or not.
     if [ "$tmp_1" = "#!/usr/bin/cmash" ]; then
-        sed '1d' $file_name > $COMP_LOC/tmp_cme_$file_name
+        sed '1d' $file_name > $COMP_LOC/tmp_cmash_$file_name
         gcc_me #Calling gcc_me() function to compile the C program
         break
     else
         tmp_2=$(grep  -csx "#!/usr/bin/cmash" $file_name)
         if [ "$tmp2" != "" ]; then
-            sed ''$tmp_2'd' $file_name > $COMP_LOC/tmp_cme_$file_name
+            sed ''$tmp_2'd' $file_name > $COMP_LOC/tmp_cmash_$file_name
             gcc_me #Calling gcc_me() funxtio to compile the C program
             break     
         else
