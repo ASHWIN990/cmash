@@ -22,7 +22,6 @@ COMP_LOC="/tmp"
 function delete_file()
 {
     rm -rf /tmp/tmp_cmash* > /dev/null
-    echo "Hello world"
 }
 
 
